@@ -19,15 +19,6 @@ public:
             
         }
         for (int i = 1; i < 5; i++) {
-			/*if (string_array[i] ==0){
-				continue;
-			}
-			if (string_array[i] > string_array[i - 1]){
-				throw "Strings are not increasing";
-			}
-			if (string_array[i] < string_array[i + 1]){
-				throw "Strings are not increasing";
-			}*/
             if (i < index){
                 if (string_array[i].wight > my_string.wight){
                     throw "Strings are not increasing";
