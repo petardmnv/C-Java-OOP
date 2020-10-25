@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 #include <queue>
 #include <list>
@@ -11,10 +12,8 @@ public:
 		this->name = "";
 		this->quantity = 0;
 	}
-	void getName(string name){
+	Product(string name, int quantity){
 		this->name = name;
-	}
-	void getQuantity(int quantity){
 		this->quantity = quantity;
 	}
 };
@@ -33,21 +32,48 @@ public:
 };
 class Factory{
 public:
-	Product* produced_products;
-	Factory(Product *produced_products){
-		this->produced_products = produced_products;
-	}
+	list <Product> p;
 	
+	Factory(list <Product> p){
+		this->p = p;
+	}
+	bool is_in_factory(Product o_p){
+		for (list <Product>::iterator it = p.begin(); it != p.end(); it++){
+			Product curr_p = *it;
+			if (curr_p.name == o_p.name){
+				return true;
+			}
+					
+		}
+		return false;
+	}
 };
 
 int main(){
-	queue<Order> orders;
 	list<Factory> factories;
-	queue<Order> fin_or;
-	queue<Order> unfin_or;
+	
+	factories.push_back(
+		Factory(
+			list<Product>({
+	    		Product("apple", 100),
+        		Product("peach", 50),
+        		Product("banana", 35)
+        	})
+    	)
+    );
+    factories.push_back(
+    	Factory(
+			list<Product>({	
+	    		Product("desk", 100),
+        		Product("comp", 50),
+        		Product("mishka", 35)
+        	})
+    	)
+    );
+    
+	queue<Order> orders;
 	string pr_name;
 	int pr_quantity;
-	
 	
 	while (true){
 		cin>>pr_name;
@@ -55,47 +81,33 @@ int main(){
 			break;
 		}
 		cin>>pr_quantity;
-		Product curr_pr = Product();
-		curr_pr.getName(pr_name);
-		curr_pr.getQuantity(pr_quantity);
+		Product curr_pr = Product(pr_name, pr_quantity);
 		Order curr_or = Order(curr_pr, false);
 		orders.push(curr_or);
 	}
-
 	
-	Product products[2];
-	products[0].getName("comp");
-	products[0].getQuantity(15); 
-	products[1].getName("kartof");
-	products[1].getQuantity(15);
-	Factory first_factory = Factory(products);	
-	factories.front(first_factory);
-	products[0].getName("mishka");
-	products[0].getQuantity(10); 
-	products[1].getName("kartof");
-	products[1].getQuantity(15);
-	Factory second_factory = Factory(products);
-	factories.front(second_factory);	
+	queue<Order> fin_or;
+	queue<Order> unfin_or;
+	//Check items and sort them into Finished and Unfinished
 	
-	//cout<<"Size:"<<sizeof(factories.front()) / sizeof(Product)<<endl;
-			
-	while (orders.size() > 0){
-		for (list<Factory>::iterator it = factories.begin(); it != factories.end(); it++){
-			if (orders.front().product.name == *it.produced_products[0].name){
-				orders.front().set_is_completed(true);
-			}
-			else if (orders.front().product.name == *it.produced_products[1].name){
-				orders.front().set_is_completed(true);
-			}
-		} 
-		if (orders.front().is_completed){
-			fin_or.push(orders.front());
-		}else{
-			unfin_or.push(orders.front());
+	while(!orders.empty()){
+		Order curr_ord = orders.front();
+		orders.pop();
+		
+		Product curr_p = curr_ord.product;
+		for (list <Factory>::iterator it = factories.begin(); it != factories.end(); it++){
+			Factory f = *it;
+			if (f.is_in_factory(curr_p)){
+				curr_ord.set_is_completed(true);
+			}	
 		}
-		orders.pop();		
+		if (curr_ord.is_completed){
+			fin_or.push(curr_ord);
+		}
+		else {
+			unfin_or.push(curr_ord);
+		}
 	}
-	
 	
 	cout<<"Finished orders"<<endl;
 	while (fin_or.size() > 0){
@@ -107,8 +119,7 @@ int main(){
 	while (unfin_or.size() > 0){
 		cout<<unfin_or.front().product.name<<endl;
 		unfin_or.pop();
-	}
-			
+	}		
 			
 			
 			
