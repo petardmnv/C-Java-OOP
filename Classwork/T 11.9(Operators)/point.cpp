@@ -50,7 +50,7 @@ public:
 };
 
 Point operator+ (const Point &p1, const Point &p2){
-		Point result = Point(p1.x + p2.x, p1.y + p2.y);
+		Point result = Point(p1.getX() + p2.getX(), p1.getY() + p2.getY());
 		return result;
 	}
 
