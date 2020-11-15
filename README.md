@@ -1,2 +1,2 @@
 # C-Java-OOP
-Repository for OPP subject.
+Repository for OOP subject.
