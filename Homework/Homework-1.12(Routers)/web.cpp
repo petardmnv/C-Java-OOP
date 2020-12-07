@@ -2,8 +2,14 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <list>
 using namespace std;
+struct route{
+	string ip;
+	int index;
+	int pakages_sent;
 
+};
 class WebPack{
 	char* content;
 	int content_length;
@@ -53,12 +59,57 @@ class Router{
 	string name;
 	string ip;
 	vector<Router*> routers;
-	#todo 
-	//class attributes and functionality
+	//Is that ClassVar
+	list<route> routing_table;
+	static const int max_elements;
+	static const int max_hops;
 public:
 	Router();
-	~Router();
+	void add_router(const Router& router){
+		Router r = router;
+		routers.push_back(&r);
+	}
+	int query_route(const string adress, const int hop_count){
+		/*Finding ip adress form list<route> compare addres with ip
+		returns 1 if current router has the same ip as adress ip
+		returns 1 if adress is into routing table adresses
+		if adress is not in router's routing_table then start 
+		searching for ardess into his neighbours vector<Router>. 
+		Every neighbour asked = hop_count -= 1
+		if one of the neighbour returns 1 add adress to 
+		routing_table with index = current neighbour index
+		if noone returns 1 return 0*/
+		int hops = 0;
+		if (this->ip == adress){
+			return 1;
+		}
+
+		for (list<route>::iterator it = routing_table.begin(); it != routing_table.end(); ++it){
+			route r = *it;
+			if (r.ip == adress){
+				return 1;
+			}
+		}
+		while(hops <= hop_count){
+			int index = 0;
+			for (vector<Router*>::iterator it = routers.begin(); it != routers.end(); ++it){
+				Router* r = *it;
+				if (r->ip == adress){
+					route new_r = {adress, index, 0}; 
+					routing_table.push_back(new_r);
+					return 1;
+				}
+				index += 1;
+			}
+			hops += 1;
+		}
+
+		return 0;
+	}
 	
+	void send_pakage(){
+		
+	}
 };
 
 int main(int argc, char const *argv[]){
