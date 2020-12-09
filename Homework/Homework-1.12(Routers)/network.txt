@@ -1,0 +1,6 @@
+router1 router2
+router1 router3
+router2 router3
+router2 router5
+router3 router5
+router5 router6

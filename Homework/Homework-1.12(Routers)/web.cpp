@@ -16,12 +16,12 @@ struct route{
 class Pakage{
 	char* content;
 	int content_length;
-	string pakage_ip;
+	string sender_ip;
 	string receiver_ip;
 	int id;
 	static int counter;
 public:
-	Pakage(char* content, string ip1, string ip2){
+	Pakage(const char* content, string ip1, string ip2){
 		if (strlen(content) == 0){
 			throw("Context is empty.");
 		}
@@ -38,7 +38,7 @@ public:
 		this->content_length = strlen(content);
 		this->content = new char[content_length];
 		strcpy(this->content, content);
-		this->pakage_ip = ip1;
+		this->sender_ip = ip1;
 		this->receiver_ip = ip2;
 	}
 
@@ -50,8 +50,8 @@ public:
 		return 1;
 	}
 
-	string get_pakage_ip(){
-		return this->pakage_ip;
+	string get_sender_ip(){
+		return this->sender_ip;
 	}
 
 	string get_receiver_ip(){
@@ -198,6 +198,13 @@ public:
 		routing_table.push_back(r);
 
 	}
+
+	string get_name(){
+		return this->name;
+	}
+	string get_ip(){
+		return this->ip;
+	}
 	~Router(){}
 };
 
@@ -205,21 +212,90 @@ int Pakage::counter = 0;
 const int Router::max_elements = 15;
 const int Router::max_hops = 3;
 
-vector<Router*> write_elements_in_vector(string file){
+vector<Router*> add_elements_in_vector(string file){
 	vector<Router*> routers;
 	ifstream myfile;
 	myfile.open(file);
 	string word;
 	while (myfile >> word){
-		Router *router = new Router(currName, currIp);
+		string name = word;
+		myfile >> word;
+		string ip = word;
+		Router *router = new Router(name, ip);
+		routers.push_back(router);
 	}
 
+	return routers;
 }
 
 void make_connections(vector<Router*> routers, string file){
 	ifstream myfile;
 	myfile.open(file);
+	string word;
+	while (myfile >> word){
+		string router1_name = word;
+		myfile >> word;
+		string router2_name = word;
+		if (router1_name == router2_name){
+			printf("Router can't make connection on his own.\n");
+			continue;
+		}
+		Router* first_router;
+		Router* second_router;
+		for (int it = 0; it < routers.size(); ++it){
+			if (routers[it]->get_name() == router1_name){
+				first_router = routers[it];
+			}
+			if (routers[it]->get_name() == router2_name){
+				second_router = routers[it];
+			}
+		}
+		try{
+			first_router->add_router(*second_router);
+		}catch(const char* exeption){
+			cout << exeption << endl;
+		}
+		try{
+			second_router->add_router(*first_router);
+		}catch(const char* exeption){
+			cout << exeption << endl;
+		}
+	}
+}
+
+void send_packages(vector<Router*> routers, string file){
+	ifstream myfile;
+	myfile.open(file);
+	string word;
+	while (myfile >> word){
+		string sender_ip = word;
+
+		myfile >> word;
+		string receiver_ip = word;
+
+		myfile >> word;
+		string content = word;
+		try{
+			char a[content.size() + 1];
+			strcpy(a, content.c_str());
+			Pakage *pakage = new Pakage(a, sender_ip, receiver_ip);
+			for (int it = 0; it < routers.size(); ++it){
+				if (routers[it]->get_ip() == sender_ip){
+					routers[it]->send_pakage(*pakage);
+				}
+			}
+		}catch(const char* exeption){
+			cout << exeption << endl;
+		}
+	}
 }
 int main(int argc, char const *argv[]){
+	string routers_file = "routers.txt";
+	string network_file = "network.txt";
+	string packages_file = "packages.txt";
+	vector<Router*> routers = add_elements_in_vector(routers_file);
+	make_connections(routers, network_file);
+	//send_packages(routers, packages_file);
+	//Ako pi6ete 6 vi podarqvam 5g ot slatinskata posta
 	return 0;
 }

@@ -13,7 +13,9 @@ int main(){
 		string name = word;
 		myfile >> word;
 		string ip = word;
-		cout << "Name " << name << " IP " << ip << endl;
+		myfile >> word;
+		string content = word;
+		cout << "Name " << name << " IP " << ip << "CONTENT -" << content << endl;
 		//Router *router = new Router(currName, currIp);
 	}
     return 0;
