@@ -1,30 +1,20 @@
 #include <iostream>
-#include <string.h>
+#include <string>
+#include <fstream>
 
 using namespace std;
 
-class A
-{
-	int a, b;
-public:
-	A(int a, int b){
-		this->a = a;
-		this->b = b;
-	}
-	void get_new(const A &new_a){
-		A c = new_a;
-		cout << c.a << c.b << endl;
-
-	}
-	void print_class(){
-		cout << this->a << this->b << endl; 
-	}
-	
-};
-
 int main(){
-	A a = A(1, 2);
-	A b = A(3, 4);
-	a.get_new(b);
+
+	ifstream myfile;
+	myfile.open("t.txt");
+	string word;
+	while (myfile >> word){
+		string name = word;
+		myfile >> word;
+		string ip = word;
+		cout << "Name " << name << " IP " << ip << endl;
+		//Router *router = new Router(currName, currIp);
+	}
     return 0;
 }
