@@ -2,12 +2,6 @@
 #include <string>
 using namespace std;
 
-class Bills{
-	double credit_limit;
-public:
-	BILLs();
-};
-
 class Account{
 	string IBAN;
 	double money; 
@@ -29,16 +23,6 @@ class Account{
 		this->money = money;
 	}
 
-	void pay(double bill){
-		if (this->money < bill){
-			throw "Not enough money!";
-		}
-		this->money -= bill;
-
-	}
-	void borrow(){
-
-	}
 };
 
 class User{
