@@ -1,14 +1,17 @@
 #include <iostream>
-#include <>
+
+using namespace std;
 
 class Point{
 	int x;
 	int y;
 public:
-	Point(int x int y){
+	Point(int x, int y){
 		this->x = x;
 		this->y = y;
 	}
+	void setX(int x) { this->x = x; }
+	void setY(int y) { this->y = y; }
 	int getX() const { return x; }
 	int getY() const { return y; }
 
@@ -16,23 +19,32 @@ public:
 
 class Ball{
 	double radius;
-	Point p;	
+	Point *p;	
 public:
-	Ball(Point &point, double radius){
+	Ball(Point point, double radius){
 		if (radius < 0){
 			throw "Invalid radius";
 		}
-		this->p = point;
+		p = &point;
 		this->radius = radius;
 	}
-}
+	Point* getP() const { return p; }
+	void change_position(int x, int y){
+		p->setX(x);
+		p->setY(y);
+	}
+};
 
 int main(int argc, char const *argv[])
 {
-	double power;
+	Point p1 = Point(1, 3);
+	Ball b = Ball(p1, 12);
+	b.change_position(23, 4);
+	cout << b.getP()->getX() << endl;
+	/*double power;
 	if (power < 2 || power > 5){
 		throw "Invalid power";
-	}
+	}*/
 	// (dirX-posX)*2 + posx
 	return 0;
 }
@@ -98,4 +110,4 @@ The ball bounced into the wall  (180, 0)
 Задачата е опростена максимално, т.е. не зависи от тежест на топчето, сила на триене и други външни фактори. Но диаметъра на топчето е фактор!
 В задачата съществува само едно топче, т.е. е невъзможно да се блъсне в друго топче.
 
-Въпроси: За въпроси, моля добавяйте коментари към заданието или по email
+Въпроси: За въпроси, моля добавяйте коментари към заданието или по email*/
