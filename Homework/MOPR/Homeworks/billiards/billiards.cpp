@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -22,43 +23,67 @@ public:
 
 class Ball{
 	double radius;
-	Point *p;	
+	Point *point;	
 public:
 	Ball(Point point, double radius){
 		if (radius < 0){
 			throw "Invalid radius";
 		}
-		p = &point;
+		this->point = &point;
 		this->radius = radius;
 	}
-	Point* getP() const { return p; }
+	Point* getP() const { return point; }
 	void change_position(int x, int y){
-		p->setX(x);
-		p->setY(y);
+		point->setX(x);
+		point->setY(y);
 	}
 };
 
 class Pool{
 	Ball *ball;
-	Point point[4];
+	Point *points[4];
 public:
-	Pool(){
-		
+	Pool(vector <Point> vector_points, Ball ball){
+		this->ball = &ball;
+		this->points[0] = &vector_points[0];
+		this->points[1] = &vector_points[1];
+		this->points[2] = &vector_points[2];
+		this->points[3] = &vector_points[3];
 	}
+	void setPoint(Point point, int position) { this->points[position] = &point; }
+	void setBall(Ball ball) { this->ball = &ball; }
+	Point* getPoint(int position) const { return points[position]; }
+	Ball* getBall() const { return ball; }
+	void determine_direction() {
+
+	}
+
 };
-int main(int argc, char const *argv[])
-{
-	/*int x, y;
-	std::vector<Point> points;
+
+vector <Point> get_pool_coordinates(){
+	int coordinates[8], j = 0;
+	size_t idx = 0;
+	vector<Point> points;
+	ifstream file("input2.txt");
 	string text;
-	cout << "Pleace enter pool coordinates by pairs like - 120 340 !" << endl;
-	for (int i = 0; i < 4; ++i){
-		cin >> x >> y;
-		Point p = Point(x, y);
+	while(getline(file, text, ' ')){
+		istringstream is(text);
+		string word;
+		while(getline(is, word, ':')){
+			coordinates[j++] = stoi(word, &idx);
+		}
+	}
+	for (int i = 1; i < j; i + 2){
+		Point p = Point(coordinates[i - 1], coordinates[i]);
 		points.push_back(p);
 	}
-	*/
-	/*ifstream file("input.txt");
+	return points;
+}
+int main(int argc, char const *argv[])
+{
+	vector<Point> points = get_pool_coordinates();
+
+	ifstream file("input.txt");
 	string word;
 	file >> word;
 	size_t idx = 0;
@@ -67,17 +92,16 @@ int main(int argc, char const *argv[])
 	int x = stoi(word, &idx);
 	file >> word;
 	int y = stoi(word, &idx);
-	cout << power << endl;
-	cout << x << endl;
-	cout << y << endl;*/
-	/*Point p1 = Point(1, 3);
+
+
+	Point p1 = Point(x, y);
 	Ball b = Ball(p1, 12);
-	b.change_position(23, 4);
-	cout << b.getP()->getX() << endl;
-	double power; 
+
 	if (power < 2 || power > 5){
 		throw "Invalid power";
-	}*/
+	}
+
+	Pool pool = Pool(points, b);
 	// (dirX-posX)*2 + posx
 	return 0;
 }
