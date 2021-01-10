@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -35,13 +38,43 @@ public:
 	}
 };
 
+class Pool{
+	Ball *ball;
+	Point point[4];
+public:
+	Pool(){
+		
+	}
+};
 int main(int argc, char const *argv[])
 {
-	Point p1 = Point(1, 3);
+	/*int x, y;
+	std::vector<Point> points;
+	string text;
+	cout << "Pleace enter pool coordinates by pairs like - 120 340 !" << endl;
+	for (int i = 0; i < 4; ++i){
+		cin >> x >> y;
+		Point p = Point(x, y);
+		points.push_back(p);
+	}
+	*/
+	/*ifstream file("input.txt");
+	string word;
+	file >> word;
+	size_t idx = 0;
+	double power = stod(word, &idx);
+	file >> word;
+	int x = stoi(word, &idx);
+	file >> word;
+	int y = stoi(word, &idx);
+	cout << power << endl;
+	cout << x << endl;
+	cout << y << endl;*/
+	/*Point p1 = Point(1, 3);
 	Ball b = Ball(p1, 12);
 	b.change_position(23, 4);
 	cout << b.getP()->getX() << endl;
-	/*double power;
+	double power; 
 	if (power < 2 || power > 5){
 		throw "Invalid power";
 	}*/
