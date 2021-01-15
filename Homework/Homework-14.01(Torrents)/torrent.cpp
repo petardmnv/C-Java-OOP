@@ -60,10 +60,24 @@ public:
 class SoftwareTorrent : public Torrent{
 	string producer;
 	string system;
-	// Tri 4isla sth
+	int major;
+	int minor;
+	int patch;
 public:
-
-} ;
+	SoftwareTorrent(string title, int size, string uploader,
+		int downloads_count, string producer, string system, 
+		int major, int minor, int patch) : Torrent(title, size, uploader, downloads_count){
+		this->major = major;
+		this->minor = minor;
+		this->patch = patch;
+	}
+	string getProducer() const { return this->producer; }
+	string getSystem() const { return this->system; }
+	int getMajor() const { return this->major; }
+	int getMinor() const { return this->minor; }
+	int getPatch() const { return this->patch; }
+	
+};
 
 int main(int argc, char const *argv[]){
 
