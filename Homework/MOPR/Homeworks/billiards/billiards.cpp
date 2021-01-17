@@ -3,168 +3,334 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <list>
+#include <math.h>
 
 using namespace std;
 
 class Point{
-	int x;
-	int y;
+	double x;
+	double y;
 public:
-	Point(int x, int y){
+	Point() {}
+	Point(double x, double y){
 		this->x = x;
 		this->y = y;
 	}
-	void setX(int x) { this->x = x; }
-	void setY(int y) { this->y = y; }
-	int getX() const { return x; }
-	int getY() const { return y; }
+	void setX(double x) { this->x = x; }
+	void setY(double y) { this->y = y; }
+	double getX() const { return x; }
+	double getY() const { return y; }
 
+};
+
+
+class VectorPoint : public Point{
+	double power;
+public:
+	VectorPoint() {}
+	VectorPoint(double x, double y , double power) : Point(x, y){
+		this->power = power;
+	}
+	double getPower() const { return this->power; }
 };
 
 class Ball{
 	double radius;
-	Point *point;	
+	Point starting_point = Point();
+	Point current_point = Point();
 public:
-	Ball(Point point, double radius){
+	Ball() {}
+	Ball(Point starting_point, double radius){
 		if (radius < 0){
 			throw "Invalid radius";
 		}
-		this->point = &point;
+		this->starting_point = starting_point;
+		this->current_point = starting_point;
 		this->radius = radius;
 	}
-	Point* getP() const { return point; }
-	void change_position(int x, int y){
-		point->setX(x);
-		point->setY(y);
+	Point getStartingPoint() const { return this->starting_point; }
+	Point getCurrentPoint() const { return this->current_point; }
+	double getRadius() const { return this->radius; }
+	void change_position(double x, double y){
+		this->current_point.setX(x);
+		this->current_point.setY(y);
 	}
 };
 
 class Pool{
-	Ball *ball;
-	Point *points[4];
+	Ball ball = Ball();
+	vector<Point> points;
+	double long_side;
+	double short_side;
 public:
 	Pool(vector <Point> vector_points, Ball ball){
-		this->ball = &ball;
-		this->points[0] = &vector_points[0];
-		this->points[1] = &vector_points[1];
-		this->points[2] = &vector_points[2];
-		this->points[3] = &vector_points[3];
+		this->ball = ball;
+		for (int i = 0; i < vector_points.size(); ++i){
+			this->points.push_back(vector_points[i]);
+		}
+		this->short_side = 0;
+		this->long_side = 0;
 	}
-	void setPoint(Point point, int position) { this->points[position] = &point; }
-	void setBall(Ball ball) { this->ball = &ball; }
-	Point* getPoint(int position) const { return points[position]; }
-	Ball* getBall() const { return ball; }
-	void determine_direction() {
+	void setPoint(Point point, int position) { this->points[position] = point; }
+	void setBall(Ball ball) { this->ball = ball; }
+	Point getPoint(int position) const { return this->points[position]; }
+	Ball getBall() const { return this->ball; }
 
+	double setSide(double x1, double x2){
+		return abs(x1 - x2);
+	}
+	void find_sides(){
+		// is_two e две ако големината на вектора е 4,
+		// защото ми трява първата точка и третата 
+		// т.e. points[0] i points[2]
+		// Aко големината на вектора е 2 ми трябват
+		// points[0] i points[1] т.е is_two ще е 1
+		int is_two = 2;
+		if (this->points.size() == 2){
+			is_two = 1;
+		}
+		double first_side = setSide(this->points[0].getX(), this->points[is_two].getX());
+		double second_side = setSide(this->points[0].getY(), this->points[is_two].getY());
+
+		if (first_side > second_side){
+			this->long_side = first_side;
+			this->short_side = second_side;
+		}else {
+			this->long_side = second_side;
+			this->short_side = first_side;
+		}
 	}
 
+
+	double get_delta_x(double x1, double x2){
+		return x2 - x1;
+	}
+	double get_delta_y(double y1, double y2){
+		return y2 - y1;
+	}
+	double get_angular_coefficient(double delta_x, double delta_y){
+		return delta_y / delta_x;
+	}
+	double get_segment(double angular_coefficient, double x, double y){
+		return y - angular_coefficient * x;
+	}
+	double get_y_using_decart_equation(double new_x, VectorPoint vector_point){
+		//Ъгловият коефициент се намира по формулата (y2 - y1) / (x2 - x1)
+		double delta_y = get_delta_y(this->ball.getCurrentPoint().getY(), vector_point.getY());
+		double delta_x = get_delta_x(this->ball.getCurrentPoint().getX(), vector_point.getX());
+		double angular_coefficient = get_angular_coefficient(delta_x, delta_y);
+		//Сегмента или отрязъкът могат да бъдат лесно намерени b = y - a*x 
+		double segment = get_segment(angular_coefficient, vector_point.getX(), vector_point.getY());
+		//След като имам x, ъглов коегициент и отрязък мога да намеря новия y
+		return new_x*angular_coefficient + segment;
+	}
+	double get_x_using_decart_equation(double new_y, VectorPoint vector_point){
+		double delta_y = get_delta_y(vector_point.getY(), this->ball.getCurrentPoint().getY());
+		double delta_x = get_delta_x(vector_point.getX(), this->ball.getCurrentPoint().getX());
+		double angular_coefficient = get_angular_coefficient(delta_x, delta_y);
+		double segment = get_segment(angular_coefficient, vector_point.getX(), vector_point.getY());
+		return (new_y - segment) / angular_coefficient;
+	}
+
+	int check_ball_position(double x, double y){
+		// Три случая 
+		// 1 - всичко точно няма ядове т.е. топчето не се блъска
+		// 2 - Много лошо топчето се е блъснало
+		// 3 - Топчето е отишло в някой от ъглите 
+		// is_two e две ако големината на вектора е 4,
+		// защото ми трява първата точка и третата 
+		// т.e. points[0] i points[2]
+		// Aко големината на вектора е 2 ми трябват
+		// points[0] i points[1] т.е is_two ще е 1
+
+		int is_two = 2;
+		if (this->points.size() == 2){
+			cout << "wtf" << endl;
+			is_two = 1;
+		}
+		if (x < (this->points[0].getX() + this->ball.getRadius())){
+			return -1;
+		}
+		if (y < (this->points[0].getY() + this->ball.getRadius())){
+			return -1;
+		}
+		if (x > (this->points[is_two].getX() - this->ball.getRadius())){
+			return -1;
+		}
+		if (y > (this->points[is_two].getY() - this->ball.getRadius())){
+			return -1;
+		}
+		// Проверка дали топчето е в ъглите
+		if (x == (this->points[0].getX() + this->ball.getRadius()) && y == (this->points[0].getY() + this->ball.getRadius())){
+			return 1;
+		}		
+		if (x == (this->points[is_two].getX() + this->ball.getRadius()) && y == (this->points[0].getY() + this->ball.getRadius())){
+			return 2;
+		}
+		if (x == (this->points[is_two].getX() - this->ball.getRadius()) && y == (this->points[is_two].getY() - this->ball.getRadius())){
+			return 3;
+		}
+		if (x == (this->points[0].getX() - this->ball.getRadius()) && y == (this->points[is_two].getY() -+ this->ball.getRadius())){
+			return 4;
+		}
+
+	 	return 0;
+	 }
+
+	vector<double> get_coordinates_when_ball_hits_the_wall(double x, double y, VectorPoint vector_point){
+		vector<double> curr_coordinates;
+		//Първо определям коя е страната в която топчето се ударило
+		//С помощта на декартовото уравнение мога да намеря то4ката
+
+		// is_two e две ако големината на вектора е 4,
+		// защото ми трява първата точка и третата 
+		// т.e. points[0] i points[2]
+		// Aко големината на вектора е 2 ми трябват
+		// points[0] i points[1] т.е is_two ще е 1
+		int is_two = 2;
+		if (this->points.size() == 2){
+			is_two = 1;
+		}
+
+		if (x < this->points[0].getX()){
+			curr_coordinates.push_back(this->points[0].getX());
+			curr_coordinates.push_back(get_y_using_decart_equation(this->points[0].getX(), vector_point));
+		}else if (x > this->points[is_two].getX()){
+			curr_coordinates.push_back(this->points[is_two].getX());
+			curr_coordinates.push_back(get_y_using_decart_equation(this->points[is_two].getX(), vector_point));
+		}else if (y < this->points[0].getY()){
+			curr_coordinates.push_back(get_x_using_decart_equation(this->points[0].getY(), vector_point));
+			curr_coordinates.push_back(this->points[0].getY());
+		}else if (y > this->points[is_two].getY()){
+			curr_coordinates.push_back(get_x_using_decart_equation(this->points[is_two].getY(), vector_point));
+			curr_coordinates.push_back(this->points[is_two].getY());
+		}
+
+		return curr_coordinates;
+	}
+
+	vector<double> get_coordinates_after_ball_hits_the_wall(double new_x, double new_y, double curr_x, double curr_y){
+		vector<double> new_coordinates;
+		double x_diversion, y_diversion;
+		if (new_x < 0){
+			x_diversion = curr_x + new_x;
+		}else{
+			x_diversion = curr_x - new_x;
+		}
+		if (new_y){
+			y_diversion = curr_y + new_y;
+		}else{
+			y_diversion = curr_y - new_y;
+
+		}
+		new_coordinates.push_back(curr_x - x_diversion);
+		new_coordinates.push_back(curr_y - y_diversion);
+		return new_coordinates;
+	}
+
+	void hit_the_ball(VectorPoint vector_point){
+	 	find_sides();
+	 	double max_vector_length_range = this->long_side*3/10;
+	 	double min_vector_length_range = this->long_side/10;
+
+	 	double a = abs(this->ball.getCurrentPoint().getX() - vector_point.getX());
+	 	double b = abs(this->ball.getCurrentPoint().getY() - vector_point.getY());
+	 	double vector_length = sqrt((a * a) + (b * b));
+	 	if ((vector_length < min_vector_length_range) || (vector_length > max_vector_length_range)){
+	 		throw "Vector length is incorrect.";
+	 	}
+	 	double new_x = (vector_point.getX() - this->ball.getCurrentPoint().getX())*vector_point.getPower() + this->ball.getCurrentPoint().getX();
+	 	double new_y = get_y_using_decart_equation(new_x, vector_point);
+	 	int result = check_ball_position(new_x, new_y);
+	 	if (result == 0){
+	 		ball.change_position(new_x, new_y);
+	 		cout << "Ball is in position: " << new_x << " " << new_y << endl;
+	 	}else if (result == 1){
+	 		ball.change_position(this->ball.getStartingPoint().getX(), this->ball.getStartingPoint().getY());
+	 		cout << "Ball hit bottom left corner with coordinates: " << new_x << new_y << endl;
+	 		cout << "The ball has been moved to :" << this->ball.getStartingPoint().getX() << " " << this->ball.getStartingPoint().getY() << endl;
+	 	}else if (result == 2){
+	 		ball.change_position(this->ball.getStartingPoint().getX(), this->ball.getStartingPoint().getY());
+	 		cout << "Ball hit bottom right corner with coordinates: " << new_x << new_y << endl;
+	 		cout << "The ball has been moved to :" << this->ball.getStartingPoint().getX() << " " << this->ball.getStartingPoint().getY() << endl;
+	 	}else if (result == 3){
+	 		ball.change_position(this->ball.getStartingPoint().getX(), this->ball.getStartingPoint().getY());
+	 		cout << "Ball hit upper right corner with coordinates: " << new_x << new_y << endl;
+	 		cout << "The ball has been moved to :" << this->ball.getStartingPoint().getX() << " " << this->ball.getStartingPoint().getY() << endl;
+	 	}else if (result == 4){
+	 		ball.change_position(this->ball.getStartingPoint().getX(), this->ball.getStartingPoint().getY());
+	 		cout << "Ball hit upper left corner with coordinates: " << new_x << new_y << endl;
+	 		cout << "The ball has been moved to :" << this->ball.getStartingPoint().getX() << " " << this->ball.getStartingPoint().getY() << endl;
+	 	}else if (result == -1){
+	 		vector<double> curr_coordinates = get_coordinates_when_ball_hits_the_wall(new_x, new_y, vector_point);
+	 		double curr_x = curr_coordinates[0];
+	 		double curr_y = curr_coordinates[1];
+	 		cout << "The ball bounced into the wall : " << curr_x << ", " << curr_y << endl;
+	 		vector<double> new_coordinates = get_coordinates_after_ball_hits_the_wall(new_x, new_y, curr_x, curr_y);
+	 		cout << "Ball is in position: " << new_coordinates[0] << ", " << new_coordinates[1] << endl;
+	 		ball.change_position(new_coordinates[0], new_coordinates[1]);
+	 	}
+	}
 };
 
-vector <Point> get_pool_coordinates(){
-	int coordinates[8], j = 0;
+vector <Point> get_pool_coordinates(string filepath){
+	double coordinates[8];
+	int j = 0;
 	size_t idx = 0;
 	vector<Point> points;
-	ifstream file("input2.txt");
+	ifstream file(filepath);
 	string text;
 	while(getline(file, text, ' ')){
 		istringstream is(text);
 		string word;
 		while(getline(is, word, ':')){
-			coordinates[j++] = stoi(word, &idx);
+			coordinates[j++] = stod(word, &idx);
 		}
 	}
-	for (int i = 1; i < j; i + 2){
-		Point p = Point(coordinates[i - 1], coordinates[i]);
-		points.push_back(p);
-	}
+	Point p1 = Point(coordinates[0], coordinates[1]);
+	points.push_back(p1);
+	Point p2 = Point(coordinates[2], coordinates[3]);
+	points.push_back(p2);
+	Point p3 = Point(coordinates[4], coordinates[5]);
+	points.push_back(p3);
+	Point p4 = Point(coordinates[6], coordinates[7]);
+	points.push_back(p4);
 	return points;
 }
-int main(int argc, char const *argv[])
-{
-	vector<Point> points = get_pool_coordinates();
+
+int main(int argc, char const *argv[]){
+	vector<Point> points = get_pool_coordinates("input2.txt");
 
 	ifstream file("input.txt");
 	string word;
+
 	file >> word;
 	size_t idx = 0;
-	double power = stod(word, &idx);
+	double diameter = stod(word, &idx);
+
 	file >> word;
-	int x = stoi(word, &idx);
+	double x = stod(word, &idx);
+
 	file >> word;
-	int y = stoi(word, &idx);
+	double y = stod(word, &idx);
 
+	while(1) {
+		double power;
+		double x1, y1;
+		cout << "Input ball power and direction point." << endl;
+		cin >> power >> x1 >> y1;
+		while (power < 2 || power > 5){
+			cout << "Invalid power size. Input power: ";
+			cin >> power;
+		}
 
-	Point p1 = Point(x, y);
-	Ball b = Ball(p1, 12);
-
-	if (power < 2 || power > 5){
-		throw "Invalid power";
+		Point p1 = Point(x, y);
+		VectorPoint p2 = VectorPoint(x1, y1, power);
+		Ball b = Ball(p1, diameter / 2);
+		Pool pool = Pool(points, b);
+		pool.hit_the_ball(p2);
 	}
-
-	Pool pool = Pool(points, b);
-	// (dirX-posX)*2 + posx
 	return 0;
+
 }
-/*Изисквания към задачата:
-Силата на удара трябва да е число с плаваща запетая между 2 и 5.
-Посоката се определя от подадена точка (както виждаме в примера горе, нашата посока се определя от точката с координати (230,130).)
-Дължината на получения вектор от топчето до тази точка трябва да е съобразена 
-с големината на полето - трябва да има дължина между W/10 и W*3/10, където W е по-голямата страна на на полето. 
-Пример: ако W = 320, големината на вектора е в интервала [32, 96]
-При удар в ъгъла, координатите на топчето се връщат към началните (от файла)
-Полето да бъде описано от точки, образуващи правоъгълник. Пример1: Поле с координати (0,0) и (320,160) ; 
-Пример2: Поле с координати (20, 10), (120, 110), (70, 160) и (-30, 60); 
-
-
-Примерни вход и изход:
-* Полето има координати (0,0); (320, 0); (320, 160); (0, 160)
-Пример 1: в случай, че топчето ни е в позиция (280,70)
-Вход:
- 2     230      110   
-Изход:
-180   150
-
-Пример 2: в случай, че топчето ни е в позиция (300,60)
-Вход:
-3     250     30  
-Изход:
-    The ball bounced into the wall  (200, 0)
-150  30
-Заб: В примера диаметъра на топчето е 0. Ако топчето има диаметър 10 (радиус 5), ще се удари в стената при координати (208.3333333,5) и ще приключи в (150,40).
-Пример 3: в случай, че топчето ни е в позиция (230,50)
-Вход:
-2     200     20  
-Изход:
-The ball bounced into the wall  (180, 0)
-170  10
-Заб: В примера диаметъра на топчето е 0. Ако топчето има диаметър 10 (радиус 5), ще се удари в стената при координати (185,5) и ще приключи в (170,20 ).
-
-** Полето има координати (20, 10); (120, 110); (70, 160) и (-30, 60)
-Пример 4: в случай, че топчето ни е в позиция (60,80)
-Вход:
-2     50     50  
-Изход:
-    The ball bounced into the wall (45,35)
-30  30
-Заб: В примера диаметъра на топчето е 0. Ако топчето има диаметър 14.14213562373095 (102), ще се удари в стената при координати (50,50) и трябва да се изчислят новите изходни координати.
-
-
-Други изисквания: 
-решението да е на C++ (или C)
-ако решението ви е в повече от един файл, архивирайте (zip или rar, молим) го и кръстете архива {№}_{LN}_{FN}, където №  е номер,  LN - фамилия, а FN е първо име.
-Оценяване(2-6):
-    0-0.5:  Преместване на топче по дадена посока
-    0-0.5:  Движение на дадено топче по дадена посока и сила
-    0-0.5: Ограничаване на параметрите спрямо посочените по-горе изисквания. Изкарвайте съответно съобщение, ако ударът е невалиден.
-    0-1: Отблъскване на топчето в полето - тук въвеждаме полето като фактор, т.е. до сега приемаме, че не е съществувало
-    0-1: Отблъскване на топчето в полето, където страните на полето са не са успоредни на осите на координатната система
-    0-0.5: Качествен код - важи над 4
-
-Бележка: 2.99 е 2
-
-Важно: 
-Задача е безкраен цикъл.
-Задачата е опростена максимално, т.е. не зависи от тежест на топчето, сила на триене и други външни фактори. Но диаметъра на топчето е фактор!
-В задачата съществува само едно топче, т.е. е невъзможно да се блъсне в друго топче.
-
-Въпроси: За въпроси, моля добавяйте коментари към заданието или по email*/
