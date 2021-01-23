@@ -1,10 +1,7 @@
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
+#include "torrent.h"
 using namespace std;
 
-class Torrent{
+/*class Torrent{
 	string title;
 	int size;
 	string uploader;
@@ -195,39 +192,62 @@ public:
 
 
 class Server{
-	vector<Torrent*> torrents;
+	vector<GameTorrent*> game_torrents;
+	vector<FilmTorrent*> film_torrents;
+	vector<SoftwareTorrent*> software_torrents;
 	vector<string> usernames;
 public:
 	Server(){}
-	Server(vector<Torrent*> torrents, vector<string> usernames) : torrents(torrents), usernames(usernames){
+	Server(vector<GameTorrent*> game_torrents, vector<FilmTorrent*> film_torrents, vector<SoftwareTorrent*> software_torrents, vector<string> usernames) : game_torrents(game_torrents), film_torrents(film_torrents), software_torrents(software_torrents), usernames(usernames){
 		// Lmao that is working somehow
-		if (torrents.size() == 0){
+		if (game_torrents.size() == 0){
 			throw "Empty game torrents vector.";
 		}
+		if (film_torrents.size() == 0){
+			throw "Empty film torrents vector.";
+		}
+		if (software_torrents.size() == 0){
+			throw "Empty software torrents vector.";
+		}
+
 		if (usernames.size() == 0){
 			throw "Empty username vector.";
 		}
 	} 
 
-	vector<Torrent*> findByTitle(string title){
-		vector<Torrent*> found_torrents;
-		for (int i = 0; i < this->torrents.size(); ++i){
-			if (title == torrents[i]->getTitle()){
-				found_torrents.push_back(torrents[i]);
+	void findByTitle(string title){
+		int found_torrents = 0;
+		for (int i = 0; i < this->game_torrents.size(); ++i){
+			if (title == game_torrents[i]->getTitle()){
+				cout << game_torrents[i]->toString() << endl;
+				found_torrents += 1;
 			}
 		}
-		if (!found_torrents.size()){
+		for (int i = 0; i < this->film_torrents.size(); ++i){
+			if (title == film_torrents[i]->getTitle()){
+				cout << film_torrents[i]->toString() << endl;
+				found_torrents += 1;
+			}
+		}
+		for (int i = 0; i < this->software_torrents.size(); ++i){
+			if (title == software_torrents[i]->getTitle()){
+				cout << software_torrents[i]->toString() << endl;
+				found_torrents += 1;
+			}
+		}
+
+		if (!found_torrents){
 			throw "Didn't found torrents with this title";
 		}
-		return found_torrents;
+
 	}
 
-	vector<Torrent*> findGamesByMAturityRating(char maturity_rating){
-		vector<Torrent*> found_game_torrents;
-		for (int i = 0; i < this->torrents.size(); ++i){
-			if (torrents[i]->getClassType() == "GameTorrent"){
-				if (maturity_rating == torrents[i]->getMaturityRating()){
-					found_game_torrents.push_back(torrents[i]);
+	vector<GameTorrent*> findGamesByMAturityRating(char maturity_rating){
+		vector<GameTorrent*> found_game_torrents;
+		for (int i = 0; i < this->game_torrents.size(); ++i){
+			if (game_torrents[i]->getClassType() == "GameTorrent"){
+				if (maturity_rating == game_torrents[i]->getMaturityRating()){
+					found_game_torrents.push_back(game_torrents[i]);
 				}
 			}
 		}
@@ -237,12 +257,12 @@ public:
 		return found_game_torrents;
 	}
 
-	vector<Torrent*> findFilmByDirector(string director_name){
-		vector<Torrent*> found_film_torrents;
-		for (int i = 0; i < this->torrents.size(); ++i){
-			if (torrents[i]->getClassType() == "FilmTorrent"){
-				if (director_name == torrents[i]->getDirector()){
-					found_film_torrents.push_back(torrents[i]);
+	vector<FilmTorrent*> findFilmByDirector(string director_name){
+		vector<FilmTorrent*> found_film_torrents;
+		for (int i = 0; i < this->film_torrents.size(); ++i){
+			if (film_torrents[i]->getClassType() == "FilmTorrent"){
+				if (director_name == film_torrents[i]->getDirector()){
+					found_film_torrents.push_back(film_torrents[i]);
 				}
 			}
 		}
@@ -252,12 +272,12 @@ public:
 		return found_film_torrents;
 	}
 
-	vector<Torrent*> findSoftwareByVersion(int major){
-		vector<Torrent*> found_software_torrents;
-		for (int i = 0; i < this->torrents.size(); ++i){
-			if (torrents[i]->getClassType() == "SoftwareTorrent"){
-				if (major == torrents[i]->getMajor()){
-					found_software_torrents.push_back(torrents[i]);
+	vector<SoftwareTorrent*> findSoftwareByVersion(int major){
+		vector<SoftwareTorrent*> found_software_torrents;
+		for (int i = 0; i < this->software_torrents.size(); ++i){
+			if (software_torrents[i]->getClassType() == "SoftwareTorrent"){
+				if (major == software_torrents[i]->getMajor()){
+					found_software_torrents.push_back(software_torrents[i]);
 				}
 			}
 		}
@@ -287,40 +307,43 @@ int main(int argc, char const *argv[]){
 		SoftwareTorrent software_torrent_3 = SoftwareTorrent("VMware Workstation3", 40, "VMware", 11000, "VMware", "Linux", 2, 0, 6);
 
 
-		cout << game_torrent.toString() << endl;
+		vector<GameTorrent*> g_torrents;
+		vector<FilmTorrent*> f_torrents;
+		vector<SoftwareTorrent*> s_torrents;
 
-		vector<Torrent*> torrents;
 
+		g_torrents.push_back(&game_torrent);
+		g_torrents.push_back(&game_torrent_2);
+		g_torrents.push_back(&game_torrent_3);
 
-		torrents.push_back(&game_torrent);
-		torrents.push_back(&game_torrent_2);
-		torrents.push_back(&game_torrent_3);
+		f_torrents.push_back(&film_torrent);
+		f_torrents.push_back(&film_torrent_0);
+		f_torrents.push_back(&film_torrent_2);
+		f_torrents.push_back(&film_torrent_3);
 
-		torrents.push_back(&film_torrent);
-		torrents.push_back(&film_torrent_0);
-		torrents.push_back(&film_torrent_2);
-		torrents.push_back(&film_torrent_3);
-
-		torrents.push_back(&software_torrent);
-		torrents.push_back(&software_torrent_2);
-		torrents.push_back(&software_torrent_3);
+		s_torrents.push_back(&software_torrent);
+		s_torrents.push_back(&software_torrent_2);
+		s_torrents.push_back(&software_torrent_3);
 
 		vector<string> usernames;
 		usernames.push_back("Peho");
 		usernames.push_back("Dankata mangala");
 		usernames.push_back("Khrum mishoka");
 
-		server = Server(torrents, usernames);
+		server = Server(g_torrents, f_torrents, s_torrents, usernames);
 
-		for (int i = 0; i < server.findByTitle("CS:GO").size(); ++i){
-			cout << server.findByTitle("CS:GO")[i]->toString() << endl;
-		}
+
+		cout << "\nThis is returned torrents after calling findByTitle(CS:GO).\n" << endl;
+		server.findByTitle("CS:GO");		
+		cout << "\nThis is returned torrents after calling findGamesByMAturityRating(M).\n" << endl;
 		for (int i = 0; i < server.findGamesByMAturityRating('M').size(); ++i){
 			cout << server.findGamesByMAturityRating('M')[i]->toString() << endl;
 		}
-		for (int i = 0; i < server.findFilmByDirector("Christopher Nolan").size(); ++i){
-			cout << server.findFilmByDirector("Christopher Nolan")[i]->toString() << endl;
+		cout << "\nThis is returned torrents after calling findFilmByDirector(Francis Ford Coppola).\n" << endl;
+		for (int i = 0; i < server.findFilmByDirector("Francis Ford Coppola").size(); ++i){
+			cout << server.findFilmByDirector("Francis Ford Coppola")[i]->toString() << endl;
 		}
+		cout << "\nThis is returned torrents after calling findSoftwareByVersion(2).\n" << endl;
 		for (int  i = 0; i < server.findSoftwareByVersion(2).size(); ++i){
 			cout << server.findSoftwareByVersion(2)[i]->toString() << endl;
 		}
@@ -328,5 +351,6 @@ int main(int argc, char const *argv[]){
 	}catch(const char * error){
 		cout << error << endl;
 	}
+	// Ako pi6ete 6 vi kanq na po edna slatinska posta.
 	return 0;
-}
+}*/
