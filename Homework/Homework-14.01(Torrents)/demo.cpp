@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -29,32 +30,42 @@ public:
 
 class B: public A
 {
-	int c;
+	vector<int> asdf;
 public:
 	B(){}
-	B(int a, int b, int c) : A(a, b){
-		if (c < 0){
-			throw "Invalid number";
+	B(int a, int b, vector<int> asdf) : A(a, b), asdf(asdf){
+		if (asdf.size() == 0){
+			throw "Empty vector";
 		}
-		this->c = c;
 	}
-	void toString(){
+	/*void toString(){
 		cout << getA() << ", " <<  getB() << ", " << c << endl; 
-	}
-	int getC() const { return c; }
+	}*/
+	//int getC() const { return c; }
+	vector<int> getAsdf() const { return this->asdf; }
 };
 
 int main(int argc, char const *argv[])
 {
 	A a = A();
 	B b = B();
+	vector<int> asdf;
+	/*asdf.push_back(12);
+	asdf.push_back(22);
+	asdf.push_back(23);
+	asdf.push_back(24);*/
 	try{
 		a = A(1 ,23);
-		b = B(2, 3, 12);
+		b = B(2, 3, asdf);
+		cout << b.getAsdf()[0] << endl;
 	}catch(const char* error){
 		cout << error << endl;
 	}
-	A new_a = A(a);
+	/*A new_a = A(a);
 	b.toString();
+
+	if ("asdf" == "asf"){
+		cout << "ok" << endl;
+	}*/
 	return 0;
 }
