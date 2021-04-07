@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Character {
@@ -7,8 +8,8 @@ public abstract class Character {
     private int maxHealth;
     private int intelligence;
     private int dexterity;
-    private List<Item> inventory;
-    private List<Equippable> hotBar;
+    private List<Item> inventory = new ArrayList<>();
+    private List<Equippable> hotBar = new ArrayList<>();
 
     public Character(double currentHealth, int maxHealth, int intelligence, int dexterity) {
         this.currentHealth = currentHealth;
@@ -79,6 +80,21 @@ public abstract class Character {
         }
     }
 
+    public void useAt(int index, Character target) throws Exception {
+        try {
+            this.hotBar.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new Exception("HotBar has no item on this index!");
+        }
+
+        if (this.hotBar.get(index) instanceof Usable){
+            ((Usable)(this.hotBar.get(index))).use(this, target);
+        }
+        else if (this.hotBar.get(index) instanceof  Consumable){
+            ((Consumable)(this.hotBar.get(index))).consume(this);
+        }
+    }
+
     abstract protected String getCharacterClass();
 
     public String toString(){
@@ -97,7 +113,11 @@ public abstract class Character {
         sb.append("Current dexterity: " + this.dexterity + "\n");
         sb.append("Inventory: \n");
         for (Item item: this.inventory) {
-            sb.append(" " + item + "\n");
+            sb.append(item.toString());
+        }
+        sb.append("Hot Bar: \n");
+        for (Equippable item: this.hotBar) {
+            sb.append(item.toString());
         }
         return sb.toString();
     }

@@ -25,4 +25,13 @@ public class Scroll extends Item implements Equippable, Usable{
         }
         target.setCurrentHealth(target.getCurrentHealth() - finalDamage);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Scroll name: " + this.getName() + "\n");
+        sb.append("     Damage: " + this.damage + "\n");
+        return sb.toString();
+    }
+
 }

@@ -7,6 +7,8 @@ public abstract class Item {
         this.name = name;
     }
 
+    public abstract String toString();
+
     public String getName() {
         return name;
     }

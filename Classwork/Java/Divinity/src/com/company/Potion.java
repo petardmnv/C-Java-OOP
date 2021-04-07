@@ -28,9 +28,23 @@ public class Potion extends Item implements Equippable, Consumable{
 
     @Override
     public void consume(Character target) {
-        target.setCurrentHealth(this.regenerateHealth + target.getCurrentHealth());
+        if (this.regenerateHealth + target.getCurrentHealth() > 100){
+            target.setCurrentHealth(100);
+        }else {
+            target.setCurrentHealth(this.regenerateHealth + target.getCurrentHealth());
+        }
         if (target.getCharacterClass().equals("Mage")){
             ((Mage)(target)).setMana(this.regenerateMana + ((Mage)(target)).getMana());
         }
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Potion name: " + this.getName() + "\n");
+        sb.append("     Regenerating mana: " + this.regenerateMana + "\n");
+        sb.append("     Regenerating health: " + this.regenerateHealth + "\n");
+        return sb.toString();
     }
 }

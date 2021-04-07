@@ -15,4 +15,13 @@ public class Note extends Item{
     public void setText(String text) {
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Note name: " + this.getName() + "\n");
+        sb.append("     Note text: " + this.text + "\n");
+        return sb.toString();
+    }
+
 }
