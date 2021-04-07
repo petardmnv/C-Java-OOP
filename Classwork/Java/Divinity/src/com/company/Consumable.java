@@ -1,2 +1,5 @@
-package com.company;public interface Consumable {
+package com.company;
+
+public interface Consumable {
+    void consume(Character target);
 }
