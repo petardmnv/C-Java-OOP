@@ -8,8 +8,8 @@ public abstract class Character {
     private int maxHealth;
     private int intelligence;
     private int dexterity;
-    private List<Item> inventory = new ArrayList<>();
-    private List<Equippable> hotBar = new ArrayList<>();
+    private Item[] inventory = new Item[10];
+    private Equippable[] hotBar = new Equippable[3];
 
     public Character(double currentHealth, int maxHealth, int intelligence, int dexterity) {
         this.currentHealth = currentHealth;
@@ -18,19 +18,19 @@ public abstract class Character {
         this.dexterity = dexterity;
     }
 
-    public List<Item> getInventory() {
+    public Item[] getInventory() {
         return inventory;
     }
 
-    public void setInventory(List<Item> inventory) {
+    public void setInventory(Item[] inventory) {
         this.inventory = inventory;
     }
 
-    public List<Equippable> getHotBar() {
+    public Equippable[] getHotBar() {
         return hotBar;
     }
 
-    public void setHotBar(List<Equippable> hotBar) {
+    public void setHotBar(Equippable[] hotBar) {
         this.hotBar = hotBar;
     }
 
@@ -67,32 +67,52 @@ public abstract class Character {
     }
 
     public void pick(Item newItem) throws Exception {
-        if (this.inventory.size() < 10){
-            this.inventory.add(newItem);
-            if (newItem instanceof Equippable){
-                if (this.hotBar.size() < 3){
-                    this.hotBar.add((Equippable)(newItem));
-                }
+        boolean isInventoryFull = true;
+        for(int i = 0; i < 10; i++) {
+            if (this.inventory[i] == null) {
+                this.inventory[i] = newItem;
+                isInventoryFull = false;
+                break;
             }
         }
-        else{
+        if (isInventoryFull){
             throw new Exception("Inventory is full!");
+        }
+        if (newItem instanceof Equippable){
+            for(int i = 0; i < 3; i++) {
+                if (this.hotBar[i] == null) {
+                    this.hotBar[i] = (Equippable)(newItem);
+                    break;
+                }
+            }
         }
     }
 
     public void useAt(int index, Character target) throws Exception {
-        try {
-            this.hotBar.get(index);
-        } catch (IndexOutOfBoundsException e) {
+        if (index < 0 || index >= this.hotBar.length) {
             throw new Exception("HotBar has no item on this index!");
         }
 
-        if (this.hotBar.get(index) instanceof Usable){
-            ((Usable)(this.hotBar.get(index))).use(this, target);
+        if (this.hotBar[index] != null){
+            if (this.hotBar[index] instanceof Usable){
+                ((Usable)(this.hotBar[index])).use(this, target);
+            }
+            else if (this.hotBar[index] instanceof  Consumable){
+                ((Consumable)(this.hotBar[index])).consume(this);
+            }
+        }else {
+            throw new Exception("Empty hotBar slot. There is no item here!");
         }
-        else if (this.hotBar.get(index) instanceof  Consumable){
-            ((Consumable)(this.hotBar.get(index))).consume(this);
+        Item it = (Item) this.hotBar[index];
+        for(int i = 0; i < 10; i++) {
+            if (this.inventory[i] != null){
+                if (this.inventory[i].getName().equals(it.getName())) {
+                    this.inventory[i] = null;
+                    break;
+                }
+            }
         }
+        this.hotBar[index] = null;
     }
 
     abstract protected String getCharacterClass();
@@ -113,21 +133,16 @@ public abstract class Character {
         sb.append("Current dexterity: " + this.dexterity + "\n");
         sb.append("Inventory: \n");
         for (Item item: this.inventory) {
-            sb.append(item.toString());
+            if (item != null) {
+                sb.append(item.toString());
+            }
         }
         sb.append("Hot Bar: \n");
         for (Equippable item: this.hotBar) {
-            sb.append(item.toString());
+            if (item != null){
+                sb.append(item.toString());
+            }
         }
         return sb.toString();
     }
 }
-//Напишете:
-//        - клас Character (представляващ героите в играта) с полета за:
-//        - current health (int)
-//        - max health (int)
-//        - intelligence (int) - skill, определящ ефективността на магиите на героя
-//        - dextirity (int) - skill, определящ ефективността на използваните арбалети и лъкове
-
-//- с метод abstract protected String getCharacterClass(), който връща името на класа на героя (примерно: Mage / Archer)
-//        - с имплементация на public String toString(), която връща класа на героя и текущата му кръв
