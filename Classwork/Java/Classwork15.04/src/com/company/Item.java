@@ -1,16 +1,22 @@
 package com.company;
 
+import java.util.Objects;
+
 public class Item {
     private int id;
     private String name;
     private double price;
     private Unit unit;
 
-    public Item(int id, String name, double price, com.company.Unit unit) {
-        this.id = id;
+    public Item(String name, double price, com.company.Unit unit) {
         this.name = name;
         this.price = price;
         this.unit = unit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.price, this.unit);
     }
 
     public int getId() {

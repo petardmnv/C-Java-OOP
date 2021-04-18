@@ -1,6 +1,6 @@
 package com.company;
 
-public enum Unit {
+enum Unit {
     kg,
     m,
     quantity
