@@ -1,6 +1,6 @@
 package com.company;
 
-enum Status {
+public enum Status {
     Open,
     Shipped,
     Completed,

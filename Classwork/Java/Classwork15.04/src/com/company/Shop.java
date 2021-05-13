@@ -24,6 +24,23 @@ public class Shop {
             this.items.put(item, amount);
         }
     }
+
+    public void removeItem(Item item , int amount) throws NoSuchElementException, NotEnoughAmountException {
+        if (this.items.containsKey(item)){
+            if (this.items.get(item) < amount){
+                throw new NotEnoughAmountException("Amount is too big!");
+            }
+            this.items.put(item, this.items.get(item) - amount);
+        }else {
+            throw new NoSuchElementException("No such item in items!");
+        }
+    }
+
+    public void addItemToCart(int ID, int amount){
+        if (){
+
+        }
+    }
 }
 
 /*

@@ -1,6 +1,6 @@
 package com.company;
 
-enum Country {
+public enum Country {
     Bulgaria,
     US,
     USA,
