@@ -1,0 +1,154 @@
+1 16 Anton Antonov Worker of Nemetschek
+2 16 Boris Borisov Worker of Nemetschek
+3 16 Valentin Valentinov Worker of Nemetschek
+4 12 Georgi Georgiev 	Worker of Nemetschek
+5 12 Daniel Draganov     Worker of Nemetschek
+6 12 Emil Emilov Worker of Nemetschek
+7 12 Ivan Ivanov Worker of Nemetschek
+8 12 Kristian  Kristianov Worker of Nemetschek
+9 10.125 Lachezar Lachezarov Worker of Nemetschek
+10 10.125 Mihail Mihailov Worker of Nemetschek
+11 10.125 Nikola Nikolo Worker of Nemetschek
+12 10.125 Ognyan Ognyanov Worker of Nemetschek
+13 10.125 Peter Petrov Worker of Nemetschek
+14 10.125 Ruslan Ruslanov Worker of Nemetschek
+15 10.125 Stefan Stefanov Worker of Nemetschek
+16 10.125 Tihomir Tihomirov Worker of Nemetschek
+17 10.125 Filip Filipov Worker of Nemetschek
+18 12 Hristo Hristov Worker of Nemetschek
+19 10.125 Tsvetan Tsvetanov Worker of Nemetschek
+20 10.125 Chavdar Chavdarov Worker of Nemetschek
+21 10.125 Liulyan Liulyanov Worker of Nemetschek
+22 8 Yasen Yasenov Worker of Nemetschek
+23 8 Yana Smith Worker of Nemetschek
+24 8 Lilya Lilyanova Worker of Nemetschek
+25 8 Hristina Hristyanova Worker of Nemetschek
+26 8 John Smith Worker of Nemetschek
+27 10.125 John Smith Missing
+28 10.125 John Smith Missing
+29 10.125 John Smith Missing
+30 10.125 John Smith Missing
+31 10.125 John Smith Missing
+32 10.125 John Smith Missing
+33 10.125 John Smith Missing
+34 10.125 John Smith Missing
+35 10.125 John Smith Missing
+36 10.125 John Smith Missing
+37 10.125 John Smith Missing
+38 10.125 John Smith Missing
+39 10.125 John Smith Missing
+40 10.125 John Smith Missing
+41 10.125 John Smith Missing
+42 10.125 John Smith Missing
+43 10.125 John Smith Missing
+44 10.125 John Smith Missing
+45 10.125 John Smith Missing
+46 10.125 John Smith Missing
+47 10.125 John Smith Missing
+48 10.125 John Smith Missing
+49 10.125 John Smith Missing
+50 10.125 John Smith Missing
+51 10.125 John Smith Missing
+52 10.125 John Smith Missing
+53 10.125 John Smith Missing
+54 10.125 John Smith Missing
+55 10.125 John Smith Missing
+56 10.125 John Smith Missing
+57 10.125 John Smith Missing
+58 10.125 John Smith Missing
+59 10.125 John Smith Missing
+60 10.125 John Smith Missing
+61 10.125 John Smith Missing
+62 10.125 John Smith Missing
+63 10.125 John Smith Missing
+64 10.125 John Smith Missing
+65 10.125 John Smith Missing
+66 10.125 John Smith Missing
+67 10.125 John Smith Missing
+68 10.125 John Smith Missing
+69 10.125 John Smith Missing
+70 10.125 John Smith Missing
+71 10.125 John Smith Missing
+72 10.125 John Smith Missing
+73 10.125 John Smith Missing
+74 20.250 George Brashnarov CEO
+75 10.125 John Smith Missing
+76 10.125 John Smith Missing
+77 10.125 John Smith Missing
+78 10.125 John Smith Missing
+79 10.125 John Smith Missing
+80 10.125 John Smith Missing
+81 10.125 John Smith Missing
+82 10.125 John Smith Missing
+83 10.125 John Smith Missing
+84 10.125 John Smith Missing
+85 10.125 John Smith Missing
+86 10.125 John Smith Missing
+87 10.125 John Smith Missing
+88 10.125 John Smith Missing
+89 10.125 John Smith Missing
+90 10.125 John Smith Missing
+91 10.125 John Smith Missing
+92 10.125 John Smith Missing
+93 10.125 John Smith Missing
+94 10.125 John Smith Missing
+95 10.125 John Smith Missing
+96 10.125 John Smith Missing
+97 10.125 John Smith Missing
+98 10.125 John Smith Missing
+99 10.125 John Smith Missing
+100 10.125 John Smith Missing
+101 10.125 John Smith Missing
+102 10.125 John Smith Missing
+103 10.125 John Smith Missing
+104 10.125 John Smith Missing
+105 10.125 John Smith Missing
+106 10.125 John Smith Missing
+107 10.125 John Smith Missing
+108 10.125 John Smith Missing
+109 10.125 John Smith Missing
+110 10.125 John Smith Missing
+111 10.125 John Smith Missing
+112 10.125 John Smith Missing
+113 10.125 John Smith Missing
+114 10.125 John Smith Missing
+115 10.125 John Smith Missing
+116 10.125 John Smith Missing
+117 10.125 John Smith Missing
+118 10.125 John Smith Missing
+119 10.125 John Smith Missing
+120 10.125 John Smith Missing
+121 10.125 John Smith Missing
+122 10.125 John Smith Missing
+123 10.125 John Smith Missing
+124 10.125 John Smith Missing
+125 10.125 John Smith Missing
+126 10.125 John Smith Missing
+127 10.125 John Smith Missing
+128 10.125 John Smith Missing
+129 10.125 John Smith Missing
+130 10.125 John Smith Missing
+131 10.125 John Smith Missing
+132 10.125 John Smith Missing
+133 10.125 John Smith Missing
+134 10.125 John Smith Missing
+135 10.125 John Smith Missing
+136 10.125 John Smith Missing
+137 10.125 John Smith Missing
+138 10.125 John Smith Missing
+139 10.125 John Smith Missing
+140 10.125 John Smith Missing
+141 10.125 John Smith Missing
+142 10.125 John Smith Missing
+143 10.125 John Smith Missing
+144 10.125 John Smith Missing
+145 10.125 John Smith Missing
+146 10.125 John Smith Missing
+147 10.125 John Smith Missing
+148 10.125 John Smith Missing
+149 10.125 John Smith Missing
+150 10.125 John Smith Missing
+151 10.125 John Smith Missing
+152 10.125 John Smith Missing
+153 10.125 John Smith Missing
+154 10.125 John Smith Missing
