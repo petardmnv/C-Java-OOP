@@ -27,4 +27,12 @@ public class Order {
     public void setDishes(Map<Dish, Integer> dishes) {
         this.dishes = dishes;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", dishes=" + dishes +
+                '}';
+    }
 }

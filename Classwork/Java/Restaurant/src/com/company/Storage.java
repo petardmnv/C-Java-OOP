@@ -10,6 +10,10 @@ public class Storage {
         this.productsList = productsList;
     }
 
+    public Storage() {
+
+    }
+
     public Map<Product, Integer> getProductsList() {
         return productsList;
     }

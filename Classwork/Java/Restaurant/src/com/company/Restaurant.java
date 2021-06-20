@@ -10,13 +10,13 @@ public class Restaurant {
     private Storage storage;
     private double money;
     private List<Order> activeOrders = new ArrayList<>();
+    private List<Order> takenOrders = new ArrayList<>();
+    private List<Order> cookedOrders = new ArrayList<>();
     private List<Order> completedOrders = new ArrayList<>();
     private List<Order> failedOrders = new ArrayList<>();
 
-    public Restaurant(List<Dish> dishes, List<Chef> chefs, List<Waiter> waiters, Storage storage, double money) {
+    public Restaurant(List<Dish> dishes, Storage storage, double money) {
         this.dishes = dishes;
-        this.chefs = chefs;
-        this.waiters = waiters;
         this.storage = storage;
         this.money = money;
     }
@@ -29,23 +29,61 @@ public class Restaurant {
         this.activeOrders = activeOrders;
     }
 
-    public void addOrder(Order o) throws Exception{
+    public synchronized Order getCookedOrder() {
+        if(cookedOrders.size() == 0){
+            return null;
+        }
+        Order o = cookedOrders.get(0);
+        cookedOrders.remove(o);
+        return o;
+    }
+
+    public synchronized Storage getStorage() {
+        return storage;
+    }
+
+    public synchronized void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
+    public synchronized double getMoney() {
+        return money;
+    }
+
+    public synchronized void setMoney(double money) {
+        this.money = money;
+    }
+
+    public synchronized void addOrder(Order o) throws Exception{
         if (o.getDishes().isEmpty()){
             throw new Exception("There are no dishes in given order!");
         }
         activeOrders.add(o);
     }
 
-    public void completeOrder(int id) throws Exception{
+    public synchronized Order getOrder(){
+        if (activeOrders.isEmpty()){
+            return null;
+        }
+        Order currentOrder = activeOrders.get(0);
+        activeOrders.remove(currentOrder);
+        takenOrders.add(currentOrder);
+        return currentOrder;
+    }
+
+    public synchronized void addCookedOrder(Order o){
+        takenOrders.remove(o);
+        cookedOrders.add(o);
+    }
+
+
+    public synchronized void completeOrder(int id){
         boolean isIdValid = false;
-        for (Order o: activeOrders) {
+        for (Order o: cookedOrders) {
             if(o.getId() == id){
                 isIdValid = true;
                 completedOrders.add(o);
             }
-        }
-        if(!isIdValid){
-            throw new Exception("Order with this id is not found");
         }
     }
 
@@ -55,10 +93,26 @@ public class Restaurant {
         }
         chefs.add(chef);
     }
+
     public void addWaiter(Waiter waiter) throws Exception{
         if (waiters.contains(waiter)){
             throw new Exception("This waiter is already in the restaurant!");
         }
         waiters.add(waiter);
+    }
+
+    public synchronized void failOrder(Order o){
+        takenOrders.remove(o);
+        failedOrders.add(o);
+    }
+
+    public void cook(){
+
+            for (Chef c : chefs) {
+                c.run();
+            }
+            for (Waiter w : waiters) {
+                w.run();
+            }
     }
 }
