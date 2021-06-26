@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Base{
     // Create workers and collect resources
@@ -20,6 +22,10 @@ public class Base{
         this.workers = workers;
     }
 
+    public synchronized List<Worker> getWorkers() {
+        return workers;
+    }
+
     public List<Crystal> getCrystals() {
         return crystals;
     }
@@ -28,6 +34,10 @@ public class Base{
         for (Crystal c: crystals){
             usedMines.put(c, 0);
         }
+    }
+
+    public synchronized int getWorkersCount(){
+        return workers.size();
     }
 
     public synchronized boolean addWorkerToMine(Crystal c){
@@ -66,8 +76,16 @@ public class Base{
         }
     }
 
+    public synchronized int getResource() {
+        return resource;
+    }
+
     public synchronized void addToResource(int amount){
         this.resource += amount;
+    }
+
+    public synchronized void removeResource(int amount){
+        this.resource -= amount;
     }
 
     public void addWorker(Worker worker){
@@ -75,7 +93,18 @@ public class Base{
     }
 
     public void startMining(){
-        
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (Worker w: workers){
+            executor.execute(w);
+        }
+        while(getWorkersCount() < 20 ){
+            if(getResource() >= 50){
+                removeResource(50);
+                executor.execute(new Worker(this, getWorkers().size() + 1, 0));
+            }
+        }
+
+        executor.shutdown();
     }
 
 }

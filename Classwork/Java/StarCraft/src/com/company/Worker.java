@@ -68,7 +68,7 @@ public class Worker implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            base.addToResource(minedCrystal);
+            base.addToResource(getMinedCrystal());
 
             try {
                 sleep(500);
