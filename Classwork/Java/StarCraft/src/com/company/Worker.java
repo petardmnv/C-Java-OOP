@@ -16,7 +16,7 @@ public class Worker implements Runnable {
         this.mined_crystal = mined_crystal;
     }
 
-    
+
 
     public int getId() {
         return id;
