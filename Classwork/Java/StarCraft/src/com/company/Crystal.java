@@ -2,18 +2,28 @@ package com.company;
 
 public class Crystal {
     // This is crystal mine where workers are mining
+    private int crystalCount;
+    private int mineId;
 
-    private int crystal_count;
-
-    public Crystal(int crystal_count) {
-        this.crystal_count = crystal_count;
-    }
-    public synchronized  int getCrystal_count() {
-        return crystal_count;
+    public Crystal(int crystalCount, int mineId) {
+        this.crystalCount = crystalCount;
+        this.mineId = mineId;
     }
 
-    public synchronized void setCrystal_count(int crystal_count) {
-        this.crystal_count = crystal_count;
+    public synchronized int getCrystalCount() {
+        return crystalCount;
     }
 
+    public synchronized int getMineId() {
+        return mineId;
+    }
+
+    public synchronized int subtractFromCrystalCount(int amount){
+        if (crystalCount - amount < 0){
+            crystalCount = 0;
+            return crystalCount;
+        }
+        crystalCount -= amount;
+        return amount;
+    }
 }
